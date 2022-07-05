@@ -1,0 +1,56 @@
+version: "3.8"
+
+services:
+  app:
+    container_name: app_container
+    build: .
+    command: uvicorn app:app --host 0.0.0.0 --port 80
+    volumes:
+      - app:/app/
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+      - pgadmin
+    networks:
+      - postgres
+
+  postgres:
+    container_name: postgres_container
+    image: postgres
+    environment:
+      POSTGRES_USER: local_user
+      POSTGRES_PASSWORD: local_password
+      POSTGRES_DB: default
+      PGDATA: /data/postgres
+    volumes:
+       - postgres:/data/postgres
+    ports:  # Remove later
+      - "5432:5432"
+    networks:
+      - postgres
+    restart: always
+
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    networks:
+      - postgres
+    restart: always
+
+networks:
+  postgres:
+    driver: bridge
+
+volumes:
+    postgres:
+    pgadmin:
+    app:
