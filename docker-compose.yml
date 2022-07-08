@@ -4,16 +4,17 @@ services:
   app:
     container_name: app_container
     build: .
-    command: uvicorn app:app --host 0.0.0.0 --port 80
-    volumes:
-      - app:/app/
+    command: uvicorn app:app --host 0.0.0.0
     ports:
-      - "8080:8080"
+      - "8000",
     depends_on:
       - postgres
       - pgadmin
     networks:
       - postgres
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.fastapi.rule=Host(`fastapi.localhost`)"
 
   postgres:
     container_name: postgres_container
@@ -46,6 +47,15 @@ services:
       - postgres
     restart: always
 
+  traefik:
+    image: traefik:v2.8
+    ports:
+      - "8008:80"
+      - "8081:8080"
+    volumes:
+      - "./traefik.dev.toml:/etc/traefik/traefik.toml"  # Синхронизируется с внешним "on-fly". Для прода заменить
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
 networks:
   postgres:
     driver: bridge
@@ -53,4 +63,3 @@ networks:
 volumes:
     postgres:
     pgadmin:
-    app:
