@@ -1,1 +1,8 @@
 environment:
+  DB_USER: "local_user"
+  DB_DATABASE: "default"
+  DB_HOST: "postgres"
+  DB_PASSWORD: "local_password"
+  DB_MAX_SIZE: "8"
+  X_API_KEY_ADMIN_USER_XXTEA_TOKEN: "5d96ff18-1185-44c8-90c2-c86302d8579a"
+  PERMANENT_SESSION_LIFETIME: "5"

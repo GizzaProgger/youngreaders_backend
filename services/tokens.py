@@ -1,5 +1,8 @@
+import base64
 import binascii
 import datetime
+import hashlib
+import json
 import logging
 import os
 import secrets
@@ -66,3 +69,19 @@ async def create_token(cursor, conn):
     user_id = await cursor.fetchone()
     return user_id[0] if user_id else None
 
+
+def encode_result(result):
+    return base64.urlsafe_b64encode(json.dumps(result).encode()).decode()
+
+
+def decode_result(encoded_text):
+    try:
+        result = json.loads(base64.urlsafe_b64decode(encoded_text).decode())
+    except:
+        result = {}
+    return result
+
+
+def get_quote_id(quote):
+    result = ''.join(filter(str.isalnum, quote)).lower()
+    return hashlib.sha256(result.encode()).hexdigest()

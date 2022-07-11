@@ -20,7 +20,7 @@ class Email:
         else:
             return False
 
-    def send_email(self, subject, body):
+    async def send_email(self, subject, body):
         message = MIMEMultipart()
         message["From"] = self.sender_email
         message["To"] = self.email

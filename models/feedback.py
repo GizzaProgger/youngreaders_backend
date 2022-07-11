@@ -1,7 +1,7 @@
-from pydantic import BaseModel, NameEmail
+from pydantic import BaseModel, EmailStr
 
 
 class Feedback(BaseModel):
-    email: NameEmail()
+    email: EmailStr
     name: str
     main_text: str
